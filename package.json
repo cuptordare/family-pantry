@@ -11,7 +11,7 @@
 		"lint:fix": "biome check --write ."
 	},
 	"dependencies": {
-		"localsync": "git+https://github.com/cuptordare/local-sync.git#4d3f2e31b60aa2c73a97db15137a7c7b532548e3"
+		"localsync": "git+https://github.com/cuptordare/local-sync.git#main"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.1",
