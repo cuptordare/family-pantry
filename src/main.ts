@@ -2,6 +2,7 @@ import { createAppData } from "./core/data";
 import { byId } from "./core/helpers";
 import type { RouteName } from "./core/types";
 import { Router, type View } from "./ui/router";
+import { createEventsView } from "./views/events";
 import { createHomeView } from "./views/home";
 import { createPantryView } from "./views/pantry";
 import { createScheduleView } from "./views/schedule";
@@ -18,6 +19,7 @@ routes.pantry = createPantryView(data, router);
 routes.store = createStoreView(data, router);
 routes.todo = createTodoView(data, router);
 routes.schedule = createScheduleView(data, router);
+routes.events = createEventsView(data, router);
 
 router.init();
 

@@ -164,8 +164,7 @@ svg {
 	letter-spacing: 0;
 }
 
-.home-subtitle,
-.home-footer {
+.home-subtitle {
 	color: var(--app-muted);
 }
 
@@ -409,7 +408,8 @@ svg {
 .wants-card,
 .schedule-day,
 .todo-item,
-.store-section {
+.store-section,
+.event-item {
 	background: var(--app-surface-strong);
 	border: 1px solid var(--app-border);
 	border-radius: 8px;
@@ -498,10 +498,89 @@ svg {
 
 .store-empty,
 .todo-empty,
-.schedule-empty {
+.schedule-empty,
+.events-empty {
 	padding: 14px;
 	color: var(--app-muted);
 	font-style: italic;
+}
+
+.events-list {
+	display: grid;
+	gap: 10px;
+}
+
+.event-item {
+	display: grid;
+	grid-template-columns: minmax(78px, auto) 1fr;
+	gap: 12px;
+	align-items: start;
+	padding: 12px 14px;
+}
+
+.event-item--expandable {
+	cursor: pointer;
+}
+
+.event-item--expandable:active {
+	transform: translateY(1px);
+}
+
+.event-item--expandable:focus-visible {
+	outline: 2px solid var(--app-primary);
+	outline-offset: 2px;
+}
+
+.event-item--weekend {
+	background: color-mix(
+		in srgb,
+		var(--app-accent) 10%,
+		var(--app-surface-strong)
+	);
+	border-color: color-mix(in srgb, var(--app-accent) 35%, var(--app-border));
+}
+
+.event-item__date-column {
+	display: grid;
+	gap: 2px;
+}
+
+.event-item__date {
+	color: var(--app-primary-dark);
+	font-size: 13px;
+	font-weight: 800;
+	white-space: nowrap;
+}
+
+.event-item__main {
+	display: grid;
+	gap: 2px;
+	min-width: 0;
+}
+
+.event-item__title {
+	font-weight: 800;
+	word-break: break-word;
+}
+
+.event-item__time,
+.event-item__location {
+	color: var(--app-blue);
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.event-item__description {
+	color: var(--app-muted);
+	font-size: 13px;
+	word-break: break-word;
+}
+
+.event-item__countdown {
+	color: var(--app-muted);
+	font-size: 12px;
+	font-weight: 700;
+	white-space: nowrap;
 }
 
 .select-option {
