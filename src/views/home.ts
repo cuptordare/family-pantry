@@ -20,7 +20,7 @@ export function createHomeView(router: Router): View {
 					<div class="home-hero">
 						<div class="home-logo">${icon(icons.food, 64)}</div>
 						<h1 class="home-title">${APP_NAME}</h1>
-						<p class="home-subtitle">Meal planning made simple!</p>
+						<p class="home-subtitle">Meal planning and more!</p>
 					</div>
 					<div class="home-card">
 						<form id="codeForm" class="home-form">
@@ -31,7 +31,6 @@ export function createHomeView(router: Router): View {
 							<button type="submit" class="home-form__button"><span>Sign In</span>${icon(icons.arrowRight)}</button>
 						</form>
 					</div>
-					<div class="home-footer"><p>A simple app for family coordination...</p></div>
 				</section>
 			`;
 		},
