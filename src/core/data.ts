@@ -6,10 +6,15 @@ import {
 	createSyncEngine,
 	type SyncEngine,
 } from "localsync";
+import {
+	createCalendarSyncAdapter,
+	EVENTS_RECORD_ID,
+} from "./calendarSyncAdapter";
 import { emptyPantryData, USER_CODES } from "./config";
 import { createGoogleSheetsSyncAdapter } from "./googleSheetsSyncAdapter";
 import type {
 	AppDataApi,
+	EventsRecord,
 	PantryData,
 	PantryRecord,
 	ScheduleRecord,
@@ -20,11 +25,16 @@ import type {
 const pantryId = (code: UserCode) => `pantry:${code}`;
 const todoId = "todo:shared";
 const scheduleId = "schedule:shared";
+const eventsId = EVENTS_RECORD_ID;
 const pushDebounceMs = 900;
 const backgroundSyncIntervalMs = 60 * 60 * 1000;
 
 function emptyTodo(): TodoRecord {
 	return { items: [] };
+}
+
+function emptyEvents(): EventsRecord {
+	return { events: [] };
 }
 
 function emptySchedule(): ScheduleRecord {
@@ -120,6 +130,7 @@ export function createAppData(): AppDataApi {
 	const pantry = app.collection<PantryRecord>("pantry");
 	const todo = app.collection<TodoRecord>("todo");
 	const schedule = app.collection<ScheduleRecord>("schedule");
+	const events = app.collection<EventsRecord>("events");
 	const network = createNetworkStatus();
 	const engines = [
 		createSyncEngine({
@@ -140,6 +151,11 @@ export function createAppData(): AppDataApi {
 			network,
 			purgeDeletedOnPush: true,
 		}),
+		createSyncEngine({
+			collection: events,
+			adapter: createCalendarSyncAdapter(),
+			network,
+		}),
 	];
 
 	const initPromise = initialize({
@@ -147,6 +163,7 @@ export function createAppData(): AppDataApi {
 		pantry,
 		todo,
 		schedule,
+		events,
 		engines,
 	});
 	void initPromise.then(runTrackedSync);
@@ -265,6 +282,22 @@ export function createAppData(): AppDataApi {
 			schedulePush(2);
 		},
 
+		async getEvents() {
+			await initPromise;
+			return clone(events.peek(eventsId)?.data.events ?? emptyEvents().events);
+		},
+
+		subscribeEvents(listener) {
+			const query = events.get(eventsId);
+			const snapshot = () =>
+				clone(query.getCurrentResult()?.data.events ?? emptyEvents().events);
+			const unsubscribe = query.subscribe((record) => {
+				listener(clone(record?.data.events ?? emptyEvents().events));
+			});
+			listener(snapshot());
+			return unsubscribe;
+		},
+
 		async clearCache() {
 			await initPromise;
 			await runTrackedSync();
@@ -277,12 +310,14 @@ async function initialize({
 	pantry,
 	todo,
 	schedule,
+	events,
 	engines,
 }: {
 	appReady: Promise<void>;
 	pantry: Collection<PantryRecord>;
 	todo: Collection<TodoRecord>;
 	schedule: Collection<ScheduleRecord>;
+	events: Collection<EventsRecord>;
 	engines: SyncEngine[];
 }): Promise<void> {
 	await appReady;
@@ -315,6 +350,14 @@ async function initialize({
 		insertedDefaults.push({
 			collection: schedule as unknown as Collection<object>,
 			id: scheduleId,
+		});
+	}
+
+	if (!events.peek(eventsId)) {
+		events.insert(emptyEvents(), { id: eventsId });
+		insertedDefaults.push({
+			collection: events as unknown as Collection<object>,
+			id: eventsId,
 		});
 	}
 

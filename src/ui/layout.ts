@@ -37,8 +37,10 @@ export function titleBar({
 		currentView === "todo"
 			? "To-Do List"
 			: currentView === "schedule"
-				? "Schedule"
-				: APP_NAME;
+				? "Weekly Schedule"
+				: currentView === "events"
+					? "Upcoming Events"
+					: APP_NAME;
 
 	activeMenu = new HamburgerMenu(code, router, data);
 	el.append(activeMenu.build(), title);
@@ -145,6 +147,7 @@ class HamburgerMenu {
 			<a href="#" data-navigate-to="pantry" ${current === "pantry" || current === "store" ? "data-active" : ""}>${icon(icons.food)} Family Pantry</a>
 			<a href="#" data-navigate-to="todo" ${current === "todo" ? "data-active" : ""}>${icon(icons.todo)} To-Do List</a>
 			<a href="#" data-navigate-to="schedule" ${current === "schedule" ? "data-active" : ""}>${icon(icons.calendar)} Schedule</a>
+			<a href="#" data-navigate-to="events" ${current === "events" ? "data-active" : ""}>${icon(icons.list)} Events</a>
 			<button class="sidebar-sync" data-force-sync>${icon(icons.check, 18)} Sync now</button>
 		`;
 		sidebar.addEventListener("click", (event) => {
